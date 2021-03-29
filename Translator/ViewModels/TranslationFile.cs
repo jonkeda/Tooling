@@ -2,6 +2,6 @@
 {
     public class TranslationFile
     {
-        public TranslationDictionary Translations { get; set; }
+        public TranslationCollection Translations { get; set; }
     }
 }

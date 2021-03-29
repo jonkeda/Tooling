@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using DocumentFormat.OpenXml.Packaging;
 using Microsoft.Win32;
@@ -21,7 +22,7 @@ namespace Translator.ViewModels
 
         private string _log;
         private string _translationTexts = "Wymiary klienta\tiets met een klant\nWymiary klienta2\tiets met een klant";
-        private TranslationDictionary _translations;
+        private TranslationCollection _translations;
 
         #endregion
 
@@ -48,7 +49,7 @@ namespace Translator.ViewModels
             set { SetProperty(ref _translationTexts, value); }
         }
 
-        public TranslationDictionary Translations
+        public TranslationCollection Translations
         {
             get { return _translations; }
             set { SetProperty(ref _translations, value); }
@@ -69,6 +70,8 @@ namespace Translator.ViewModels
             }
         }
 
+        private static Regex _sentences = new Regex(@"<w:t>([^<]*)</w:t>", RegexOptions.Compiled);
+
         private void Translate2(string path)
         {
             try
@@ -84,15 +87,16 @@ namespace Translator.ViewModels
                 {
                     using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
                     {
-                        var translations = Translations; // GetTranslations();
+                        //var translations = Translations; // GetTranslations();
+                        _translationsByVan = Translations.CreateDictionary();
+                        _scentencesByFound = new SentenceDictionary();
                         string docText = sr.ReadToEnd();
-                        foreach (var entry in translations)
-                        {
-                            docText = docText.Replace(entry.Van, entry.Tot);
-                        }
+                        string newText = _sentences.Replace(docText, MatchEvaluator);
+                        Sentences = _scentencesByFound.CreateCollection();
+
                         using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
                         {
-                            sw.Write(docText);
+                            sw.Write(newText);
                         }
                         AddLog($"Document {path} vertaald.");
 
@@ -105,7 +109,72 @@ namespace Translator.ViewModels
                 AddLog(e);
             }
         }
-        
+
+        private TranslationDictionary _translationsByVan;
+        private SentenceDictionary _scentencesByFound;
+        private SentenceCollection _sentences1;
+        private Sentence _selectedSentence;
+        private string _translationText;
+
+        public SentenceCollection Sentences
+        {
+            get { return _sentences1; }
+            set { SetProperty(ref _sentences1, value); }
+        }
+
+        public Sentence SelectedSentence
+        {
+            get { return _selectedSentence; }
+            set { SetProperty(ref _selectedSentence, value); }
+        }
+
+        public string TranslationText
+        {
+            get { return _translationText; }
+            set { SetProperty(ref _translationText, value); }
+        }
+
+        public ICommand TranslationAddCommand
+        {
+            get
+            {
+                return new TargetCommand(TranslationAdd);
+            }
+        }
+
+        private void TranslationAdd()
+        {
+            if (SelectedSentence == null)
+            {
+                return;
+            }
+            Translation translation = Translations.FirstOrDefault(v => v.Van == SelectedSentence.Zin);
+            if (translation == null)
+            {
+                Translations.Add(new Translation(SelectedSentence.Zin, TranslationText));
+            }
+        }
+
+        private string MatchEvaluator(Match match)
+        {
+            string found = match.Groups[1].Value;
+            string foundTrimmed = found.TrimStart().TrimEnd();
+            if (_translationsByVan.TryGetValue(foundTrimmed, out var translation))
+            {
+                if (!_scentencesByFound.ContainsKey(found))
+                {
+                    _scentencesByFound.Add(found, true);
+                }
+                return match.Value.Replace(foundTrimmed, translation.Tot);
+            }
+            if (!_scentencesByFound.ContainsKey(found))
+            {
+                _scentencesByFound.Add(found, false);
+            }
+            return match.Value;
+        }
+
+
         private void AddLog(string text)
         {
             Log = $"{DateTime.Now}\n{text}\n\n{Log}";
@@ -303,7 +372,7 @@ namespace Translator.ViewModels
             }
 
             StringBuilder sb = new StringBuilder();
-            TranslationDictionary translationLists = new TranslationDictionary();
+            TranslationCollection translationLists = new TranslationCollection();
             foreach (var key in translations.Keys.OrderBy(k => k))
             {
                 string value = translations[key];

@@ -93,7 +93,7 @@
     </ApplicationDefinition>
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Translation.cs" />
-    <Compile Include="ViewModels\TranslationDictionary.cs" />
+    <Compile Include="ViewModels\TranslationCollection.cs" />
     <Compile Include="ViewModels\TranslationFile.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -146,6 +146,7 @@
     <Resource Include="Images\beetle.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Examples\Offerte.xml" />
     <Content Include="Translations.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
