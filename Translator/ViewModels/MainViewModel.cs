@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,80 +53,7 @@ namespace Translator.ViewModels
             get { return _translations; }
             set { SetProperty(ref _translations, value); }
         }
-
-        public ICommand LoadTranslationsCommand
-        {
-            get { return new TargetCommand(LoadTranslations); }
-        }
-
-        private void LoadTranslations()
-        {
-            
-        }
-
-        public object ParseTranslationsCommand
-        {
-            get { return new TargetCommand(ParseTranslations); }
-        }
-
-        private void ParseTranslations()
-        {
-            Dictionary<string, string> translations = new Dictionary<string, string>();
-
-            bool getNextFind = false;
-            string findLine = null;
-            bool getNextReplace = false;
-            string replaceLine = null;
-
-            foreach (string line in TranslationTexts.Lines())
-            {
-                if (line.StartsWith("FIND"))
-                {
-                    getNextFind = true;
-                }
-                else if (getNextFind)
-                {
-                    findLine = line;
-                    getNextFind = false;
-                }
-                else if (line.StartsWith("REPLACE"))
-                {
-                    getNextReplace = true;
-                }
-                else if (getNextReplace)
-                {
-                    replaceLine = line;
-                    getNextReplace = false;
-
-                    string[] findParts = findLine.Split(',');
-                    string[] replaceParts = replaceLine.Split(',');
-                    for (int i = 0; i < findParts.Length; i++)
-                    {
-                        if (!translations.ContainsKey(findParts[i].TrimEnd().TrimStart()))
-                        {
-                            translations.Add(findParts[i].TrimEnd().TrimStart(), 
-                                replaceParts[i].TrimEnd().TrimStart());
-                        }
-                    }
-                }
-            }
-
-            StringBuilder sb = new StringBuilder();
-            TranslationDictionary translationLists = new TranslationDictionary();
-            foreach (var key in translations.Keys.OrderBy(k => k))
-            {
-                string value = translations[key];
-                sb.Append(key);
-                sb.Append('\t');
-                sb.AppendLine(value);
-
-                translationLists.Add(new Translation(key, value));
-            }
-
-            Translations = translationLists;
-            TranslationTexts = sb.ToString();
-        }
-
+        
         public ICommand TranslateDocumentCommand
         {
             get { return new TargetCommand(TranslateDocument); }
@@ -139,32 +67,6 @@ namespace Translator.ViewModels
             {
                 Translate2(ofd.FileName);
             }
-        }
-
-        private Dictionary<string, string> GetTranslations()
-        {
-            Dictionary<string, string> translations = new Dictionary<string, string>();
-            foreach (string line in TranslationTexts.Lines())
-            {
-                string[] parts = line.Split('\t');
-                if (parts.Length == 2)
-                {
-                    string key = parts[0].TrimEnd().TrimStart();
-                    if (!translations.ContainsKey(key))
-                    {
-                        translations.Add(key, parts[1].TrimEnd().TrimStart());
-                    }
-                }
-                else if (!string.IsNullOrEmpty(parts[0]))
-                {
-                    string key = parts[0].TrimEnd().TrimStart();
-                    if (!translations.ContainsKey(key))
-                    {
-                        translations.Add(key, "");
-                    }
-                }
-            }
-            return translations;
         }
 
         private void Translate2(string path)
@@ -182,17 +84,19 @@ namespace Translator.ViewModels
                 {
                     using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
                     {
-                        var translations = GetTranslations();
+                        var translations = Translations; // GetTranslations();
                         string docText = sr.ReadToEnd();
                         foreach (var entry in translations)
                         {
-                            docText = docText.Replace(entry.Key, entry.Value);
+                            docText = docText.Replace(entry.Van, entry.Tot);
                         }
                         using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
                         {
                             sw.Write(docText);
                         }
                         AddLog($"Document {path} vertaald.");
+
+                        Process.Start(newPath);
                     }
                 }
             }
@@ -201,6 +105,50 @@ namespace Translator.ViewModels
                 AddLog(e);
             }
         }
+        
+        private void AddLog(string text)
+        {
+            Log = $"{DateTime.Now}\n{text}\n\n{Log}";
+        }
+
+        private void AddLog(Exception ex)
+        {
+            string message = ex.Message;
+            ex = ex.InnerException;
+            while (ex != null)
+            {
+                message += $"\n\r ==> {ex.Message}";
+                ex = ex.InnerException;
+            }
+            AddLog(message);
+        }
+
+        public void Close()
+        {
+            SaveTranslations();
+        }
+
+        private void LoadDefaultTranslations()
+        {
+            string path = Path.GetDirectoryName(typeof(MainViewModel).Assembly.Location);
+            var file = XmlSerializerEx.Load<TranslationFile>(Path.Combine(path, "Translations.txt"));
+            Translations = file.Translations;
+        }
+
+        private void SaveTranslations()
+        {
+            TranslationFile file = new TranslationFile
+            {
+                Translations = Translations
+            };
+            string path = Path.GetDirectoryName(typeof(MainViewModel).Assembly.Location);
+
+            File.WriteAllText(Path.Combine(path, "Translations.txt"), file.Serialize());
+        }
+
+        #endregion
+
+        #region Old
 
         private void Translate(string fileName)
         {
@@ -297,45 +245,105 @@ namespace Translator.ViewModels
                 ref replaceAll, ref missing, ref missing, ref missing, ref missing);
         }
 
-        private void AddLog(string text)
+        public ICommand LoadTranslationsCommand
         {
-            Log = $"{DateTime.Now}\n{text}\n\n{Log}";
+            get { return new TargetCommand(LoadTranslations); }
         }
 
-        private void AddLog(Exception ex)
+        private void LoadTranslations()
         {
-            string message = ex.Message;
-            ex = ex.InnerException;
-            while (ex != null)
+
+        }
+
+        public object ParseTranslationsCommand
+        {
+            get { return new TargetCommand(ParseTranslations); }
+        }
+
+        private void ParseTranslations()
+        {
+            Dictionary<string, string> translations = new Dictionary<string, string>();
+
+            bool getNextFind = false;
+            string findLine = null;
+            bool getNextReplace = false;
+            string replaceLine = null;
+
+            foreach (string line in TranslationTexts.Lines())
             {
-                message += $"\n\r ==> {ex.Message}";
-                ex = ex.InnerException;
+                if (line.StartsWith("FIND"))
+                {
+                    getNextFind = true;
+                }
+                else if (getNextFind)
+                {
+                    findLine = line;
+                    getNextFind = false;
+                }
+                else if (line.StartsWith("REPLACE"))
+                {
+                    getNextReplace = true;
+                }
+                else if (getNextReplace)
+                {
+                    replaceLine = line;
+                    getNextReplace = false;
+
+                    string[] findParts = findLine.Split(',');
+                    string[] replaceParts = replaceLine.Split(',');
+                    for (int i = 0; i < findParts.Length; i++)
+                    {
+                        if (!translations.ContainsKey(findParts[i].TrimEnd().TrimStart()))
+                        {
+                            translations.Add(findParts[i].TrimEnd().TrimStart(),
+                                replaceParts[i].TrimEnd().TrimStart());
+                        }
+                    }
+                }
             }
-            AddLog(message);
-        }
 
-        public void Close()
-        {
-            SaveTranslations();
-        }
-
-        private void LoadDefaultTranslations()
-        {
-            string path = Path.GetDirectoryName(typeof(MainViewModel).Assembly.Location);
-            var file = XmlSerializerEx.Load<TranslationFile>(Path.Combine(path, "Translations.txt"));
-            Translations = file.Translations;
-        }
-
-        private void SaveTranslations()
-        {
-            TranslationFile file = new TranslationFile
+            StringBuilder sb = new StringBuilder();
+            TranslationDictionary translationLists = new TranslationDictionary();
+            foreach (var key in translations.Keys.OrderBy(k => k))
             {
-                Translations = Translations
-            };
-            string path = Path.GetDirectoryName(typeof(MainViewModel).Assembly.Location);
+                string value = translations[key];
+                sb.Append(key);
+                sb.Append('\t');
+                sb.AppendLine(value);
 
-            File.WriteAllText(Path.Combine(path, "Translations.txt"), file.Serialize());
+                translationLists.Add(new Translation(key, value));
+            }
+
+            Translations = translationLists;
+            TranslationTexts = sb.ToString();
         }
+
+        private Dictionary<string, string> GetTranslations()
+        {
+            Dictionary<string, string> translations = new Dictionary<string, string>();
+            foreach (string line in TranslationTexts.Lines())
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length == 2)
+                {
+                    string key = parts[0].TrimEnd().TrimStart();
+                    if (!translations.ContainsKey(key))
+                    {
+                        translations.Add(key, parts[1].TrimEnd().TrimStart());
+                    }
+                }
+                else if (!string.IsNullOrEmpty(parts[0]))
+                {
+                    string key = parts[0].TrimEnd().TrimStart();
+                    if (!translations.ContainsKey(key))
+                    {
+                        translations.Add(key, "");
+                    }
+                }
+            }
+            return translations;
+        }
+
 
         #endregion
     }
