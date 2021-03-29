@@ -1,0 +1,35 @@
+﻿<controls:DialogWindow x:Class="Tooling.Foundation.Views.Other.ImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:Tooling.Foundation.UI.Controls"
+        xmlns:other="clr-namespace:Tooling.Foundation.ViewModels.Other"
+        xmlns:converters="clr-namespace:Tooling.Foundation.UI.Converters"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance IsDesignTimeCreatable=false, Type={x:Type other:ImageViewModel}}"
+        WindowState="Maximized"
+        Icon="../../Images/Tooling.png"
+        Title="Image">
+
+<Grid>
+<Grid.RowDefinitions>
+    <RowDefinition Height="Auto"/>
+    <RowDefinition Height="*"/>
+</Grid.RowDefinitions>
+
+    <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <Button Content="Copy" Command="{Binding CopyImageCommand}"/>
+        <Button Content="Copy as file" Command="{Binding CopyImageFileCommand}"/>
+        <TextBox Text="{Binding Image}" Style="{StaticResource MetroLabelBox}" />
+    </StackPanel>
+
+    <Button Grid.Row="1" Click="ButtonBase_OnClick" >
+        <Button.Content>
+            <Image Source="{Binding Image, Converter={x:Static converters:Cv.VirtualImage}}" />
+        </Button.Content>
+    </Button>
+
+</Grid>
+
+</controls:DialogWindow>
