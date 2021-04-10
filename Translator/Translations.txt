@@ -146,7 +146,7 @@
       <Tot />
     </Translation>
     <Translation>
-      <Van>Aluminium 86mm profiel Fold Line met aanslag</Van>
+      <Van>Systeem : Aluprof MB-86 Fold Line, harmonicadeuren</Van>
       <Tot>Aluminium harmonicasysteem met 20 mm aanslag</Tot>
     </Translation>
     <Translation>
@@ -471,7 +471,7 @@
     </Translation>
     <Translation>
       <Van>Kleur : Structuur RAL: 9005 Gitzwart</Van>
-      <Tot>Kleur: Zwart structuur Steel Look RAL 9005</Tot>
+      <Tot>Kleur: Zwart mat structuur RAL 9005</Tot>
     </Translation>
     <Translation>
       <Van>Kleur : Wit met zwarte afdichting</Van>
@@ -524,74 +524,6 @@
     <Translation>
       <Van>Napór wiatru Pa</Van>
       <Tot>Wind druk Pa</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte nr. 210319-J4</Van>
-      <Tot>Offerte nr. 210319-J4</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2019/002126</Van>
-      <Tot>Opdracht nr. 200501-1</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2019/002178</Van>
-      <Tot>Offerte nr. 200505-5</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2019/002562</Van>
-      <Tot>Opdracht nr. 200611-3</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2019/002835</Van>
-      <Tot>Opdrachtnr. 200713-J6</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2019/003074</Van>
-      <Tot>Opdracht nr. 200818-3</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2019/003082</Van>
-      <Tot>Opdracht nr. 200820-1</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2019/003084</Van>
-      <Tot>Opdracht nr. 200820-2</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/000899</Van>
-      <Tot>Opdracht nr. 201209-J1</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/001532</Van>
-      <Tot>Opdracht nr. 210216-J2</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/001754</Van>
-      <Tot>Offerte nr. 210308-J1</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/001871</Van>
-      <Tot>Offerte nr. 210315-J9</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/001882</Van>
-      <Tot>Offerte nr.: 210316-J6</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/001899</Van>
-      <Tot>Opdracht nr.: 210317-J5</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/001995</Van>
-      <Tot>Offerte nr.: 210326-B2</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/001995.1</Van>
-      <Tot>Offerte nr.: 210326-B3</Tot>
-    </Translation>
-    <Translation>
-      <Van>Offerte OF/2020/001996</Van>
-      <Tot>Offerte nr.: 210326-B4</Tot>
     </Translation>
     <Translation>
       <Van>Oscieznica</Van>
@@ -840,6 +772,66 @@
     <Translation>
       <Van>zonder dat men de sluting moet vergrendelen</Van>
       <Tot />
+    </Translation>
+    <Translation>
+      <Van>Okapnik zewnętrzny</Van>
+      <Tot>Afwateringsstrip binnenzijde</Tot>
+    </Translation>
+    <Translation>
+      <Van>Rynna</Van>
+      <Tot>goot</Tot>
+    </Translation>
+    <Translation>
+      <Van>Buitenkader: K518851</Van>
+      <Tot>Buitenkader:</Tot>
+    </Translation>
+    <Translation>
+      <Van>In de kleur van schrijnwerk</Van>
+      <Tot>In de kleur van het profiel</Tot>
+    </Translation>
+    <Translation>
+      <Van>K518859, vleugel scheema A - twee vleugels / een actief</Van>
+      <Tot>vleugel schema A - twee vleugels / een actief</Tot>
+    </Translation>
+    <Translation>
+      <Van>Offerte OF/</Van>
+      <Tot>Offerte</Tot>
+    </Translation>
+    <Translation>
+      <Van>Okapnik wewnętrzny</Van>
+      <Tot>Afwateringsstrip buitenzijde</Tot>
+    </Translation>
+    <Translation>
+      <Van>Kader NL Reno , vormT 2 rail 59 HS</Van>
+      <Tot>Kader met aanslag</Tot>
+    </Translation>
+    <Translation>
+      <Van>Cylindre D-class SKG</Van>
+      <Tot>Cilinder SKG**</Tot>
+    </Translation>
+    <Translation>
+      <Van>Boven: Binnenzicht</Van>
+      <Tot>Boven: Binnenzijde</Tot>
+    </Translation>
+    <Translation>
+      <Van>Onder: Buitenaanzicht</Van>
+      <Tot>Onder: Buitenzijde</Tot>
+    </Translation>
+    <Translation>
+      <Van>K518840/41, Ościeżnica NL Reno, kształt T</Van>
+      <Tot>Kader met aanslag</Tot>
+    </Translation>
+    <Translation>
+      <Van>Afstandhouder: SWISSPACER ULTIMATE zwart</Van>
+      <Tot>Afstandhouder: zwart</Tot>
+    </Translation>
+    <Translation>
+      <Van>Systeem : Aluprof MB-59HS, hef schuif systeem</Van>
+      <Tot>Aluminium hefschuifpui 120mm </Tot>
+    </Translation>
+    <Translation>
+      <Van>4 ESG/16Ar/4th ESG [Ug=1.1] (24mm) 9005 ULTIMATE CZARNA</Van>
+      <Tot>4 ESG/16Ar/4th ESG [Ug=1.1] (24mm)</Tot>
     </Translation>
   </Translations>
 </TranslationFile>

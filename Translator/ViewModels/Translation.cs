@@ -1,7 +1,12 @@
-﻿namespace Translator.ViewModels
+﻿using Tooling.UI;
+
+namespace Translator.ViewModels
 {
-    public class Translation
+    public class Translation : ViewModel
     {
+        private string _van;
+        private string _tot;
+
         public Translation()
         {
         }
@@ -12,8 +17,16 @@
             Tot = tot;
         }
 
-        public string Van { get; set; }
+        public string Van
+        {
+            get { return _van; }
+            set { SetProperty(ref _van, value); }
+        }
 
-        public string Tot { get; set; }
+        public string Tot
+        {
+            get { return _tot; }
+            set { SetProperty(ref _tot, value); }
+        }
     }
 }

@@ -1,0 +1,70 @@
+﻿<mah:MetroWindow x:Class="NopDeployer.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:local="clr-namespace:NopDeployer"
+                 xmlns:viewModels="clr-namespace:NopDeployer.ViewModels"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:controls="clr-namespace:Tooling.Foundation.UI.Controls;assembly=Tooling.Foundation.UI"
+                 d:DataContext="{d:DesignInstance IsDesignTimeCreatable=false, Type={x:Type viewModels:MainViewModel}}"
+                 mc:Ignorable="d"
+                 Title="NopDeployer" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="24px" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="DEPLOY STEPS"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="1. Publish (Right click on Nop.Web => Publish"/>
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <Button Content="2. Create zip" Command="{Binding SendDeploymentCommand}" />
+        </StackPanel>
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="3. Create new Deploy Folder"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Text="4. FTP zip file to new Deploy folder (FileZilla)"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="5. Logon"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Text="6. Unzip"/>
+        <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Text="7. Change website folder"/>
+
+        <Label Grid.Row="9" Grid.Column="0" Content="Deploy folder" />
+        <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding DeployFolder}"/>
+
+        <Label Grid.Row="10" Grid.Column="0" Content="App data folder" />
+        <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding AppDataFolder}"/>
+
+        <Label Grid.Row="11" Grid.Column="0" Content="Deploy zip file" />
+        <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding DeployZipFile}"/>
+
+        <Label Grid.Row="12" Grid.Column="0" Content="FTP server" />
+        <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding FtpServer}"/>
+
+        <Label Grid.Row="13" Grid.Column="0" Content="FTP user" />
+        <TextBox Grid.Row="13" Grid.Column="1" Text="{Binding FtpUser}"/>
+
+        <Label Grid.Row="14" Grid.Column="0" Content="FTP password" />
+        <controls:PasswordEx Grid.Row="14" Grid.Column="1" Password="{Binding FtpPassword}"/>
+
+        <Label Grid.Row="15" Grid.Column="0" Content="Log" />
+        <TextBox Grid.Row="16" Grid.ColumnSpan="2" Grid.Column="0" Text="{Binding Log}" Style="{StaticResource MetroLabelNote}" />
+    </Grid>
+</mah:MetroWindow>

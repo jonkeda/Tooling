@@ -21,34 +21,53 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <!--<RowDefinition Height="*" />-->
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="400" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
                     <Button Content="Vertaal document" Command="{Binding TranslateDocumentCommand}"/>
+                    <Button Content="Opnieuw vertalen" Command="{Binding TranslateAgainDocumentCommand}"/>
+                    <Button Content="Open document" Command="{Binding OpenDocumentCommand}"/>
+                    <Button Content="Vertalingen opslaan" Command="{Binding SaveTranslationsCommand}"/>
+
                     <!--<Button Content="Laad vertalingen" Command="{Binding LoadTranslationsCommand}"/>
                     <Button Content="Parse" Command="{Binding ParseTranslationsCommand}"/>-->
                 </StackPanel>
 
-                <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Document" Style="{StaticResource MetroSmallHeader}" />
-                <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="Log" Style="{StaticResource MetroLabel}" />
-                <TextBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Log}" Height="80" 
+                <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Content="Document" Style="{StaticResource MetroSmallHeader}" />
+                <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Content="{Binding DocumentFilename}"  />
+                <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Content="Log" Style="{StaticResource MetroLabel}" />
+                <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Log}" Height="80" 
                          Style="{StaticResource MetroLabelNote}" />
 
-                <Label Grid.Row="5" Grid.Column="0" Content="Vertalingen" Style="{StaticResource MetroSmallHeader}" />
+                <Label Grid.Row="6" Grid.Column="0" Content="Vertalingen" Style="{StaticResource MetroSmallHeader}" />
                 <!--<TextBox Grid.Row="6" Text="{Binding TranslationTexts}" 
                          Style="{StaticResource MetroTextNote}" />-->
-                <DataGrid Grid.Row="6" Grid.Column="0" ItemsSource="{Binding Translations}">
+                <DataGrid Grid.Row="7" Grid.Column="0" ItemsSource="{Binding Translations}"
+                          AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Van}" Header="Van" Width="400" />
+                        <DataGridTextColumn Binding="{Binding Tot}" Header="Tot" Width="*" />
+                    </DataGrid.Columns>
 
                 </DataGrid>
 
-                <Label Grid.Row="5" Grid.Column="1" Content="Zinnen" Style="{StaticResource MetroSmallHeader}" />
-                <Grid Grid.Row="6" Grid.Column="1">
+                <GridSplitter Grid.Column="1" Grid.RowSpan="2" Grid.Row="6"
+                              Width="3"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Stretch"
+                              ShowsPreview="True" />
+
+
+                <Label Grid.Row="6" Grid.Column="2" Content="Zinnen" Style="{StaticResource MetroSmallHeader}" />
+                <Grid Grid.Row="7" Grid.Column="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -57,12 +76,19 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Content="Nieuwe vertaling" Style="{StaticResource MetroLabel}" />
-                    <Label Grid.Row="1" Content="{Binding SelectedSentence.Zin}"  />
-                    <TextBox Grid.Row="2" Text="{Binding TranslationText}"/>
+                    <TextBox Grid.Row="1" Text="{Binding SelectedSentence.Zin, Mode=OneWay}"
+                             MaxHeight="100 " Style="{StaticResource MetroLabelNote}"/>
+                    <TextBox Grid.Row="2" Text="{Binding TranslationText}" Height="100" TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto" />
                     <Button Grid.Row="3" Content="Toevoegen" Command="{Binding TranslationAddCommand}"/>
                     <DataGrid Grid.Row="4" ItemsSource="{Binding Sentences}" 
-                              SelectedItem="{Binding SelectedSentence}">
-
+                              SelectedItem="{Binding SelectedSentence}"
+                               AutoGenerateColumns="False"
+                              CanUserAddRows="False" CanUserDeleteRows="False">
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn Binding="{Binding Vertaald}" Header="V" Width="30" IsReadOnly="True" />
+                            <DataGridTextColumn Binding="{Binding Zin}" Header="Vertaling" Width="*" IsReadOnly="True" />
+                        </DataGrid.Columns>
                     </DataGrid>
 
                 </Grid>

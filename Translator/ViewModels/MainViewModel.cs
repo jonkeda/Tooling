@@ -54,7 +54,7 @@ namespace Translator.ViewModels
             get { return _translations; }
             set { SetProperty(ref _translations, value); }
         }
-        
+
         public ICommand TranslateDocumentCommand
         {
             get { return new TargetCommand(TranslateDocument); }
@@ -70,7 +70,46 @@ namespace Translator.ViewModels
             }
         }
 
-        private static Regex _sentences = new Regex(@"<w:t>([^<]*)</w:t>", RegexOptions.Compiled);
+        public ICommand TranslateAgainDocumentCommand
+        {
+            get { return new TargetCommand(TranslateAgainDocument); }
+        }
+
+        private void TranslateAgainDocument()
+        {
+            if (!string.IsNullOrEmpty(DocumentFilename))
+            {
+                Translate2(DocumentFilename);
+            }
+        }
+
+        public ICommand OpenDocumentCommand
+        {
+            get { return new TargetCommand(OpenDocument); }
+        }
+
+        private void OpenDocument()
+        {
+            if (!string.IsNullOrEmpty(DocumentFilenameVertaald))
+            {
+                Process.Start(DocumentFilenameVertaald);
+            }
+        }
+
+        public ICommand SaveTranslationsCommand
+        {
+            get { return new TargetCommand(SaveTranslations); }
+        }
+
+        public string DocumentFilenameVertaald { get; set; }
+
+        public string DocumentFilename
+        {
+            get { return _documentFilename; }
+            set { SetProperty(ref _documentFilename, value); }
+        }
+
+        private static readonly Regex _sentences = new Regex(@"<w:t>([^<]*)</w:t>", RegexOptions.Compiled);
 
         private void Translate2(string path)
         {
@@ -80,7 +119,9 @@ namespace Translator.ViewModels
                 string filename = Path.GetFileNameWithoutExtension(path);
                 string extension = Path.GetExtension(path);
                 string newPath = Path.Combine(directory, $"{filename}_vertaald{extension}");
-                
+                DocumentFilename = path;
+                DocumentFilenameVertaald = newPath;
+
                 File.Copy(path, newPath, true);
 
                 using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(newPath, true))
@@ -100,7 +141,6 @@ namespace Translator.ViewModels
                         }
                         AddLog($"Document {path} vertaald.");
 
-                        Process.Start(newPath);
                     }
                 }
             }
@@ -115,6 +155,7 @@ namespace Translator.ViewModels
         private SentenceCollection _sentences1;
         private Sentence _selectedSentence;
         private string _translationText;
+        private string _documentFilename;
 
         public SentenceCollection Sentences
         {
@@ -125,7 +166,13 @@ namespace Translator.ViewModels
         public Sentence SelectedSentence
         {
             get { return _selectedSentence; }
-            set { SetProperty(ref _selectedSentence, value); }
+            set
+            {
+                if (SetProperty(ref _selectedSentence, value))
+                {
+                    TranslationText = value?.Translation?.Tot;
+                }
+            }
         }
 
         public string TranslationText
@@ -148,10 +195,17 @@ namespace Translator.ViewModels
             {
                 return;
             }
-            Translation translation = Translations.FirstOrDefault(v => v.Van == SelectedSentence.Zin);
-            if (translation == null)
+            if (SelectedSentence.Translation == null)
             {
-                Translations.Add(new Translation(SelectedSentence.Zin, TranslationText));
+                Translation translation = Translations.FirstOrDefault(v => v.Van == SelectedSentence.Zin);
+                if (translation == null)
+                {
+                    Translations.Add(new Translation(SelectedSentence.Zin, TranslationText));
+                }
+            }
+            else
+            {
+                SelectedSentence.Translation.Tot = TranslationText;
             }
         }
 
@@ -163,13 +217,13 @@ namespace Translator.ViewModels
             {
                 if (!_scentencesByFound.ContainsKey(found))
                 {
-                    _scentencesByFound.Add(found, true);
+                    _scentencesByFound.Add(found, translation);
                 }
                 return match.Value.Replace(foundTrimmed, translation.Tot);
             }
             if (!_scentencesByFound.ContainsKey(found))
             {
-                _scentencesByFound.Add(found, false);
+                _scentencesByFound.Add(found, null);
             }
             return match.Value;
         }
@@ -199,9 +253,14 @@ namespace Translator.ViewModels
 
         private void LoadDefaultTranslations()
         {
+
             string path = Path.GetDirectoryName(typeof(MainViewModel).Assembly.Location);
-            var file = XmlSerializerEx.Load<TranslationFile>(Path.Combine(path, "Translations.txt"));
-            Translations = file.Translations;
+            path = Path.Combine(path, "Translations.txt");
+            if (File.Exists(path))
+            {
+                var file = XmlSerializerEx.Load<TranslationFile>(path);
+                Translations = file.Translations;
+            }
         }
 
         private void SaveTranslations()
@@ -213,6 +272,8 @@ namespace Translator.ViewModels
             string path = Path.GetDirectoryName(typeof(MainViewModel).Assembly.Location);
 
             File.WriteAllText(Path.Combine(path, "Translations.txt"), file.Serialize());
+
+            AddLog("Vertalingen opgeslagen");
         }
 
         #endregion
